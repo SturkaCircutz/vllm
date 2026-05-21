@@ -6,12 +6,19 @@
 
 
 int main(){
-    std::cout << "vllm stage 0"<< std::endl;
-    __nv_bfloat16 x = __float2bfloat16(1.0f);
-    // turning float 1.0 f to bf16 save it to x
-    float y = __bfloat162float(x);
-    // turning it back to normal floating number
-    std::cout<<y<<std::endl;
+    vllm::ModelConfig cfg = vllm::tinyConfig();
+
+    if(!vllm::validateModelConfig(cfg)){
+        std::cerr<<"invalid";
+        return 1;
+    }
+
+    std::cout<<"hidden dim: "<<cfg.hidden_dim<<endl;
+    std::cout<<"num_heads: "<<cfg.num_heads<<endl;
+    std::cout<<"head_dim: "<<cfg.head_dim<<endl;
+    vllm::DeviceBuffer<__nv_bfloat16> buffer(1024);
+    std::cout<<"Device buffer size: "<<buffer.size()<<endl;
+    CUDA_CHECK(cudaDeviceSynchronize());
     return 0;
 
 }
